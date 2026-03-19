@@ -26,11 +26,11 @@ Visit:
 
 ## 3. Choose Your Data Source
 
-<!-- IMAGE: Insert JPEG from Quickstart PDF page 2 showing the "Choose Your Data Sources" UI -->
+![Choose Data Source](images/quickstart/quickstart-choose-data-source.png)
 
 ## 4. Run the Install Script
 
-<!-- IMAGE: Insert JPEG from Quickstart PDF page 3 showing the install script screen -->
+![Install Script](images/quickstart/quickstart-install-script.png)
 
 The install script will:
 
@@ -168,7 +168,7 @@ curl -X POST http://localhost:8880/v1/ingest \
   -d '{"path":"/tmp/example.parquet"}'
 ```
 
-<!-- IMAGE: Insert JPEG from Quickstart PDF page 7 showing the ingest endpoint example and Chat UI screen -->
+![Ingest Flow](images/quickstart/quickstart-ingest.png)
 
 ## 8. Confirm Ingest
 
@@ -218,7 +218,9 @@ Enter a question such as:
 
 The Chat UI will send the request to the ATOMIC API and return a grounded answer based on your corpus.
 
-<!-- IMAGE: Insert JPEG from Quickstart PDF page 9 showing the chat interface and sample prompt -->
+![Chat UI](images/quickstart/quickstart-chat-ui.png)
+
+![Chat Examples](images/quickstart/quickstart-troubleshooting.png)
 
 ## 9.6 Troubleshooting
 
@@ -248,7 +250,6 @@ View Neo4j logs:
 docker logs atomic-neo4j
 ```
 
-<!-- IMAGE: Insert JPEG from Quickstart PDF page 10 showing troubleshooting examples -->
 
 ## 10. Stopping the Stack
 
