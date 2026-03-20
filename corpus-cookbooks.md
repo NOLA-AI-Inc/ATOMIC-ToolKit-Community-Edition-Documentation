@@ -2,7 +2,7 @@
 # 3. Corpus Cookbooks
 
 ```md
-# 📚 Corpus Cookbooks
+# Corpus Cookbooks
 
 Corpus Cookbooks walk you step-by-step from raw data to a production-ready corpus export compatible with the ATOMIC SDK Ingest pipeline.
 
@@ -163,7 +163,7 @@ This file is now ready for:
 
 ---
 
-## 📰 Cookbook A: Substack Articles → Writing Assistant
+## Cookbook A: Substack Articles → Writing Assistant
 
 ### Goal
 
@@ -241,7 +241,7 @@ This corpus now enables:
 
 ---
 
-## 🎓 Cookbook B: Academic Slides → Study Bot
+## Cookbook B: Academic Slides → Study Bot
 
 ### Goal
 
@@ -310,7 +310,7 @@ Result:
 
 ---
 
-## 🌐 Cookbook C: FineWeb from HuggingFace → Knowledge Corpus
+## Cookbook C: FineWeb from HuggingFace → Knowledge Corpus
 
 ### Goal
 
