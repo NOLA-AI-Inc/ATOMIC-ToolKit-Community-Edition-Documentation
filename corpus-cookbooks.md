@@ -19,7 +19,7 @@ All corpus builds follow the same 6 stages:
 
 ## General Workflow Guide
 
-<!-- IMAGE: Insert JPEG from Cookbooks PDF page 1 showing the general workflow landing screen -->
+![Workflow](images/cookbooks/cookbooks-workflow.png)
 
 ### Step 1 — Select Dataset Source
 
@@ -55,7 +55,7 @@ Best for:
 
 ### Step 2 — Define Meaningful Templates
 
-<!-- IMAGE: Insert JPEG from Cookbooks PDF page 3 showing the template builder UI -->
+![Templates](images/cookbooks/cookbooks-template-builder.png)
 
 Templates convert raw rows into structured training statements.
 
@@ -97,7 +97,7 @@ Think of this step as **schema design for intelligence**.
 
 ### Step 3 — Add Metadata
 
-<!-- IMAGE: Insert JPEG from Cookbooks PDF page 5 showing the metadata entry UI -->
+![Metadata](images/cookbooks/cookbooks-metadata.png)
 
 Attach contextual grounding:
 - Document Title
@@ -122,7 +122,7 @@ Use consistent categories like:
 
 ### Step 4 — Approve Training Rows
 
-<!-- IMAGE: Insert JPEG from Cookbooks PDF page 6 showing the review/approve rows UI -->
+![Approve Rows](images/cookbooks/cookbooks-approve-rows.png)
 
 The system generates candidate prompt/answer rows.
 
@@ -138,7 +138,7 @@ High approval discipline = higher quality corpus.
 
 ### Step 5 — Export Dataset
 
-<!-- IMAGE: Insert JPEG from Cookbooks PDF page 7 showing the export dataset UI -->
+![Export](images/cookbooks/cookbooks-export.png)
 
 Click **Export**.
 
@@ -148,7 +148,7 @@ Choose:
 
 ### Step 6 — Download as “Corpus (SDK Ingest)”
 
-<!-- IMAGE: Insert JPEG from Cookbooks PDF page 8 showing the Corpus (SDK Ingest) export option -->
+![SDK Ingest](images/cookbooks/cookbooks-sdk-ingest.png)
 
 Select:
 
