@@ -1,7 +1,6 @@
 
 # 3. Corpus Cookbooks
 
-```md
 # Corpus Cookbooks
 
 Corpus Cookbooks walk you step-by-step from raw data to a production-ready corpus export compatible with the ATOMIC SDK Ingest pipeline.
