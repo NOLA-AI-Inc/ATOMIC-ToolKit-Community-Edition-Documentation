@@ -10,39 +10,39 @@ It combines:
 
 ---
 
-# 📚 Documentation Overview
+# Documentation Overview
 
 This repository includes four core guides:
 
-### 🚀 Quickstart Guide
+### Quickstart Guide
 End-to-end setup of the ATOMIC stack, including install, ingest, and inference.
 
-➡️ `docs/quickstart.md`
+ `docs/quickstart.md`
 
 ---
 
-### 🛠 Troubleshooting
+### Troubleshooting
 Common errors, fixes, and debugging workflows.
 
-➡️ `docs/troubleshooting.md`
+ `docs/troubleshooting.md`
 
 ---
 
-### 📊 Corpus Cookbooks
+### Corpus Cookbooks
 Step-by-step guides for building high-quality datasets for ingestion.
 
-➡️ `docs/corpus-cookbooks.md`
+ `docs/corpus-cookbooks.md`
 
 ---
 
-### 🔌 OpenClaw Integration
+### OpenClaw Integration
 How to connect ATOMIC to OpenClaw for orchestration and external tooling.
 
-➡️ `docs/openclaw-tutorial.md`
+ `docs/openclaw-tutorial.md`
 
 ---
 
-# ⚡ Quickstart (Condensed)
+# Quickstart (Condensed)
 
 ## 1. System Requirements
 
@@ -63,7 +63,7 @@ docker compose --version
 
 Go to:
 
-👉 [https://atomizer.ai/get-started](https://atomizer.ai/get-started)
+ [https://atomizer.ai/get-started](https://atomizer.ai/get-started)
 
 Select your dataset and copy the install script.
 
@@ -120,7 +120,7 @@ Expected:
 
 ---
 
-## ✅ Expected Result
+## Expected Result
 
 You now have:
 
@@ -131,7 +131,7 @@ You now have:
 
 ---
 
-# 🧠 What to Do Next
+# What to Do Next
 * Checkout the full quickstart guide → `docs/quickstart.md `
 * Learn ingestion workflows → `docs/corpus-cookbooks.md`
 * Debug issues → `docs/troubleshooting.md`
@@ -139,7 +139,7 @@ You now have:
 
 ---
 
-# 🛑 Stopping the Stack
+# Stopping the Stack
 
 ```bash
 docker compose down
@@ -153,7 +153,7 @@ docker compose down -v
 
 ---
 
-# 💬 Support
+# Support
 
 If you run into issues:
 
@@ -163,7 +163,7 @@ If you run into issues:
 
 ---
 
-# 🚀 Roadmap Notes
+# Roadmap Notes
 
 * Mac native binary (coming soon)
 * GPU acceleration improvements
