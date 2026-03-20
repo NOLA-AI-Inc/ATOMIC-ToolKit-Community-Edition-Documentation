@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta charset="UTF-8" />
+    <title>ATOMICAssetCore Community Edition Docs</title>
+    <meta
+      name="description"
+      content="Documentation for ATOMICAssetCore Community Edition"
+    />
+    <link
+      rel="stylesheet"
+      href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/dark.css"
+    />
+    <style>
+      :root {
+        --theme-color: #4f7cff;
+      }
+
+      .markdown-section img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">Loading documentation...</div>
+
+    <script>
+      window.$docsify = {
+        name: 'ATOMICAssetCore',
+        repo: 'https://github.com/NOLA-AI-Inc/ATOMIC-ToolKit-Community-Edition-Documentation',
+        homepage: 'README.md',
+        loadSidebar: true,
+        loadNavbar: true,
+        coverpage: true,
+        onlyCover: false,
+        subMaxLevel: 2,
+        auto2top: true,
+        relativePath: false,
+        alias: {
+          '/.*/_sidebar.md': '/_sidebar.md',
+          '/.*/_navbar.md': '/_navbar.md'
+        },
+        search: {
+          maxAge: 86400000,
+          paths: 'auto',
+          placeholder: 'Search docs',
+          noData: 'No results found',
+          depth: 3
+        }
+      };
+    </script>
+
+    <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/docsify.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/plugins/emoji.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/plugins/zoom-image.min.js"></script>
+  </body>
+</html>
