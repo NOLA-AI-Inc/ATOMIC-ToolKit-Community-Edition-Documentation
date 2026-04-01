@@ -1,4 +1,4 @@
-# ATOMICAssetCore Community Edition
+# ATōMIC ToolKit
 
 > Knowledge graph, retrieval, ingestion, and grounded inference documentation.
 

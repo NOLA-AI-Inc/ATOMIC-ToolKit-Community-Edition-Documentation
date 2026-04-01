@@ -1,4 +1,4 @@
-# ATOMICAssetCore Community Edition
+# ATōMIC ToolKit Community Edition
 
 ## Quickstart Guide
 
