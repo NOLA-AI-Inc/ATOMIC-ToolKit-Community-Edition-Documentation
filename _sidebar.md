@@ -1,4 +1,4 @@
-* [ATOMICAssetCore Docs](/)
+* [ATōMIC ToolKit Docs](/)
 
 * Getting Started
   * [Overview & Quickstart](/)
