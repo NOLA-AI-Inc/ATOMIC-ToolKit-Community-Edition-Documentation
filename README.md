@@ -1,6 +1,6 @@
-# ATOMICAssetCore Community Edition
+# ATōMIC ToolKit Community Edition
 
-ATOMIC is a **knowledge graph + retrieval + inference system** that transforms raw datasets into structured, queryable intelligence.
+The ATōMIC ToolKit is a **knowledge graph + retrieval + inference system** that transforms raw datasets into structured, queryable intelligence.
 
 It combines:
 - Graph storage (Neo4j)
