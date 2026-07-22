@@ -1,5 +1,5 @@
 * [Home](/)
 * [Quickstart](/quickstart.md)
+* [Current app](/app-guide.md)
+* [API](/api-reference.md)
 * [Troubleshooting](/troubleshooting.md)
-* [Corpus Cookbooks](/corpus-cookbooks.md)
-* [OpenClaw Tutorial](/openclaw-tutorial.md)
