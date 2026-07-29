@@ -1,175 +1,91 @@
-# ATōMIC ToolKit Community Edition
+# ATōMIC ToolKit documentation
 
-The ATōMIC ToolKit is a **knowledge graph + retrieval + inference system** that transforms raw datasets into structured, queryable intelligence.
+ATōMIC ToolKit (ATK) turns source material into a provenance-aware corpus for
+grounded search, inference, and validation. ATOMIC Current packages the local
+service and browser interface into a macOS menu-bar application.
 
-It combines:
-- Graph storage (Neo4j)
-- Structured ingestion pipelines
-- Retrieval-augmented inference
-- Interactive chat interface
+> Last verified: 2026-07-22 against ATOMIC Current 1.422.13 with the 1.4.22
+> backend. An edition may hide features that are not licensed or permitted for
+> the signed-in user.
 
----
+## Start with your goal
 
-# Documentation Overview
+| Goal | Guide |
+|---|---|
+| Install the app and ask a first grounded question | [Quickstart](quickstart.md) |
+| Understand Chat, Corpus, Validator, Account, and Settings | [Using ATOMIC Current](app-guide.md) |
+| Connect a trusted application to the local API | [Application integration](developer-workflow.md) |
+| Look up authentication, CSRF, routes, and streaming events | [Local API reference](api-reference.md) |
+| Prepare useful source material | [Corpus cookbooks](corpus-cookbooks.md) |
+| Build owner-approved organizational knowledge | [Knowledge foundation](knowledge-foundation.md) |
+| Diagnose startup, authentication, ingestion, or grounding | [Troubleshooting](troubleshooting.md) |
 
-This repository includes four core guides:
+## How the current product works
 
-### Quickstart Guide
-End-to-end setup of the ATOMIC stack, including install, ingest, and inference.
-
- `docs/quickstart.md`
-
----
-
-### Troubleshooting
-Common errors, fixes, and debugging workflows.
-
- `docs/troubleshooting.md`
-
----
-
-### Corpus Cookbooks
-Step-by-step guides for building high-quality datasets for ingestion.
-
- `docs/corpus-cookbooks.md`
-
----
-
-### OpenClaw Integration
-How to connect ATOMIC to OpenClaw for orchestration and external tooling.
-
- `docs/openclaw-tutorial.md`
-
----
-
-# Quickstart (Condensed)
-
-## 1. System Requirements
-
-- macOS (Apple Silicon), Linux, or Windows (WSL)
-- Docker + Docker Compose
-- ~30GB free disk
-
-Verify:
-
-```bash
-docker --version
-docker compose --version
-````
-
----
-
-## 2. Download ATOMIC
-
-Go to:
-
- [https://atomizer.ai/get-started](https://atomizer.ai/get-started)
-
-Select your dataset and copy the install script.
-
----
-
-## 3. Run Install Script
-
-```bash
-/bin/bash -c "$(curl -fsSL '<your-script-url>')"
+```text
+Source documents
+      │
+      ▼
+Corpus ingestion ──→ provenance + propositions + relationships
+      │                              │
+      ├─→ Corpus catalog             ├─→ grounded Chat
+      ├─→ Graph exploration          └─→ claim validation
+      └─→ reusable local knowledge
 ```
 
-This will:
+ATK keeps these responsibilities separate:
 
-* Authenticate with registry
-* Pull containers
-* Start:
+| Layer | Responsibility |
+|---|---|
+| **Corpus** | Stores ingested documents, metadata, and provenance |
+| **Proposition/context layer** | Retrieves compact, relevant claims for inference |
+| **Chat** | Produces an answer from retrieved evidence and reports supporting context |
+| **Validator** | Checks a draft or claim against corpus evidence |
+| **Graph and Calder** | Explore relationships or execute supported corpus expressions |
+| **Account** | Manages the signed-in profile and per-user API keys |
+| **Settings** | Validates and applies supported runtime or persistent configuration |
 
-  * Neo4j
-  * ATOMIC API
-  * Chat UI
-* Begin dataset ingestion
+The model is a reasoning layer, not the source of truth. A defensible answer is
+one whose evidence can be followed back to an ingested source.
 
----
+## Local app and API
 
-## 4. Verify Services
+On macOS, launch **ATOMIC Current** from Applications. The app starts the local
+service and opens its interface in a browser. The preferred API port is `8880`,
+but the launcher selects another free port when necessary.
 
-### Neo4j
+The effective URL is recorded in:
 
-[http://localhost:7474](http://localhost:7474)
-`neo4j / devpassword`
+```text
+~/Library/Application Support/ATK/launcher_ports.env
+```
 
-### API
-
-[http://localhost:8880/docs](http://localhost:8880/docs)
-(FastAPI UI should load)
-
-### Chat UI
-
-[http://localhost:8080](http://localhost:8080)
-
----
-
-## 5. Confirm Everything is Running
+The health endpoint is public:
 
 ```bash
-docker ps
+curl -sS http://127.0.0.1:8880/v1/health
 ```
 
-Expected:
+Use the effective URL from `launcher_ports.env` if that request cannot connect.
+Authenticated state-changing requests also require ATK's CSRF handshake; see
+the [Local API reference](api-reference.md) before writing a client.
 
-* `atomic-neo4j`
-* `atomic-community`
-* `atomic-chat-web`
+## Trust rules
 
----
+- Ingested text establishes what a source says, not whether the source is
+  current or approved.
+- Include ownership, scope, effective dates, and status in policy documents.
+- Keep generated summaries distinguishable from authoritative documents.
+- Never embed a personal API key in browser or mobile application code.
+- Integrations should use the HTTP API, not the embedded database or files in
+  the application-support directory.
 
-## Expected Result
+## Support
 
-You now have:
+Start with [Troubleshooting](troubleshooting.md). When reporting a problem,
+include the ATOMIC Current version, effective local URL, failing route or app,
+HTTP status, and relevant log excerpt. Remove API keys, cookies, credentials,
+and private source text.
 
-* A running knowledge graph
-* A loaded dataset
-* A queryable API
-* A chat interface for interacting with your corpus
-
----
-
-# What to Do Next
-* Checkout the full quickstart guide → `docs/quickstart.md `
-* Learn ingestion workflows → `docs/corpus-cookbooks.md`
-* Debug issues → `docs/troubleshooting.md`
-* Integrate with external systems → `docs/openclaw-tutorial.md`
-
----
-
-# Stopping the Stack
-
-```bash
-docker compose down
-```
-
-Full reset:
-
-```bash
-docker compose down -v
-```
-
----
-
-# Support
-
-If you run into issues:
-
-* Check logs: `docker logs atomic-community`
-* Use troubleshooting guide
-* Reach out to the team via Discord or by starting a Github issue in this repo
-
----
-
-# Roadmap Notes
-
-* Mac native binary (coming soon)
-* GPU acceleration improvements
-* Expanded ingestion pipelines
-* Plugin ecosystem (OpenClaw + others)
-
-```
-
----
+For documentation issues, open an issue in the
+[documentation repository](https://github.com/NOLA-AI-Inc/ATOMIC-ToolKit-Community-Edition-Documentation).

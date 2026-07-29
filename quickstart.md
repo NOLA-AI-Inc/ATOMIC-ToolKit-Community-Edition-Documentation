@@ -1,264 +1,113 @@
-# ATōMIC ToolKit Community Edition
+# ATOMIC Current quickstart
 
-## Quickstart Guide
+This guide starts the local app, creates a useful corpus, and verifies a
+grounded answer.
 
-## 1. System Requirements
+## 1. Install ATOMIC Current
 
-### Required
-- Linux (Ubuntu 22.04 recommended), macOS (arm64), or Windows (requires WSL)
-- Docker
-- Docker Compose
-- 30+ GB free disk space  
-  Additional space required varies based on the size of your corpus ingest.
+ATOMIC Current requires macOS 12 or newer. Download the edition supplied by
+your organization or visit [atomizer.ai/get-started](https://atomizer.ai/get-started),
+then move **ATOMIC Current.app** to Applications.
 
-### Verify
-```bash
-docker --version
-docker compose --version
-nvidia-container-cli info
-````
+Allow at least 30 GB of free disk space, plus space for source documents and
+downloaded models.
 
-## 2. Download the Image
+## 2. Launch the app
 
-Visit:
+Open **ATOMIC Current** from Applications. It runs as a menu-bar application,
+starts the local service, and opens the interface in your default browser.
 
-`https://atomizer.ai/get-started`
+The first startup can take several minutes while ATK initializes its embedded
+database or obtains a configured model. Keep the menu-bar app running while you
+use the interface.
 
-## 3. Choose Your Data Source
+The preferred URL is:
 
-![Choose Data Source](images/quickstart/quickstart-choose-data-source.png)
+```text
+http://127.0.0.1:8880/
+```
 
-## 4. Run the Install Script
-
-![Install Script](images/quickstart/quickstart-install-script.png)
-
-The install script will:
-
-* Authenticate with the Atomizer container registry
-* Download the ATOMIC Community containers
-* Start the following services using Docker:
-
-  * `atomic-neo4j`
-  * `atomic-community`
-  * `atomic-chat-web`
-
-The script will also start ingestion of the datasets you selected within Atomizer.ai into your corpus on the running ATK stack.
-
-## 5. Verify Services
-
-### Neo4j
-
-Open:
-
-`http://localhost:7474`
-
-Login:
-
-* Username: `neo4j`
-* Password: `devpassword`
-
-### ATOMIC API
-
-Open:
-
-`http://localhost:8880/docs`
-
-If you see the FastAPI docs, the stack is live.
-
-### ATOMIC Chat Interface
-
-Open:
-
-`http://localhost:8080`
-
-This launches the ATOMIC Chat UI, which connects to the running ATOMIC API and allows interactive querying of your corpus.
-
-### Quick Service Check (CLI)
-
-Verify containers are running:
+If that port is busy, the launcher chooses another one. On macOS, read the
+effective URL with:
 
 ```bash
-docker ps
+grep '^ATOMIC_API_URL=' "$HOME/Library/Application Support/ATK/launcher_ports.env"
 ```
 
-Expected containers:
+## 3. Create or sign in to your account
 
-* `atomic-neo4j`
-* `atomic-community`
-* `atomic-chat-web`
+Complete the registration or sign-in screen shown by the app. Registration may
+be limited to email addresses approved by your organization.
 
-## Expected End State
+The browser interface uses a local authenticated session. API keys are created
+separately in **Account** and should be used only by trusted integrations.
 
-After following this guide, you should have:
+## 4. Add source material
 
-* ✅ Neo4j running
-* ✅ ATOMIC API running
-* ✅ Chat UI running
-* ✅ Corpus cleared
-* ✅ Example parquet ingested
-* ✅ Inference returning grounded answers
+Open **Corpus** and upload a supported file. Current builds accept:
 
----
+- PDF (`.pdf`)
+- Word (`.docx`)
+- text (`.txt`)
+- Markdown (`.md`)
+- JSON (`.json`)
+- Parquet (`.parquet`)
 
-# Advanced Guide
+For documents without embedded corpus metadata, supply a useful title, author,
+category, and publication date. Prefer a small, coherent first document whose
+contents you know well.
 
-## 6. Clear Corpus
+Wait for ingestion to finish, then confirm the document appears in the Corpus
+catalog or statistics. An accepted upload does not necessarily mean every
+document has finished processing.
 
-Use the API docs to locate the corpus management endpoint.
+## 5. Ask a grounded question
 
-Endpoint pattern:
+Open **Chat** and ask a question whose answer exists only in the document you
+just uploaded. For example:
 
-`POST /corpus/clear`
+```text
+According to the onboarding policy, who approves production access and what
+evidence is required?
+```
 
-Run:
+Inspect the cited context or provenance. A generic question is a weak test
+because a model may answer it without using your corpus.
+
+## 6. Try claim validation
+
+Open **Validator**, paste a short draft, and extract or check one factual claim.
+Validation compares the claim with available corpus evidence; it is not a
+substitute for an accountable reviewer.
+
+## 7. Verify the service from a terminal
+
+The health route does not require authentication:
 
 ```bash
-curl -X POST http://localhost:8880/corpus/clear
+ATK_URL=http://127.0.0.1:8880
+curl -sS "$ATK_URL/v1/health"
 ```
 
-Confirm in Neo4j:
+Use the value from `launcher_ports.env` when ATK selected a different port.
+Health proves that HTTP is reachable. It does not prove that a user is signed
+in, a corpus is ready, or a grounded model request can complete.
 
-```cypher
-MATCH (n) RETURN count(n);
-```
+## 8. Create an API key only when needed
 
-This should return `0` or only system nodes.
+In **Account**, create a per-user API key for a trusted local or server-side
+integration. The complete `atk_...` value is displayed once. Store it in a
+secret manager or protected environment variable and revoke it when no longer
+needed.
 
-## 7. Ingest Example Parquet
+Do not paste a key into source code or ship it in a browser bundle. ATK's
+authenticated POST, PUT, PATCH, and DELETE routes also require a CSRF cookie and
+matching `X-CSRF-Token` header. Follow [Application integration](developer-workflow.md)
+and the [Local API reference](api-reference.md).
 
-For more personalized example parquet generation using the Atomizer front-end corpus-ready export feature and dataset toolkit, see the Corpus Cookbooks.
+## Next steps
 
-### Step 7.1 — Create Example Parquet
-
-On host:
-
-```bash
-python - <<'PY'
-import pandas as pd
-import pyarrow as pa
-import pyarrow.parquet as pq
-
-df = pd.DataFrame([
-  {"doc_id":"1", "text":"ATOMIC builds AI knowledge graphs."},
-  {"doc_id":"2", "text":"Neo4j stores relationships between entities."}
-])
-
-pq.write_table(pa.Table.from_pandas(df), "example.parquet")
-print("Wrote example.parquet")
-PY
-```
-
-### Step 7.2 — Copy Into Container
-
-```bash
-docker cp example.parquet atomic-community:/tmp/example.parquet
-```
-
-### Step 7.3 — Call Ingest Endpoint or Upload via Chat UI Web
-
-Endpoint:
-
-`POST /v1/ingest`
-
-Example:
-
-```bash
-curl -X POST http://localhost:8880/v1/ingest \
-  -H "Content-Type: application/json" \
-  -d '{"path":"/tmp/example.parquet"}'
-```
-
-![Ingest Flow](images/quickstart/quickstart-ingest.png)
-
-## 8. Confirm Ingest
-
-In Neo4j Browser, run:
-
-```cypher
-MATCH (d:Document) RETURN d LIMIT 10;
-```
-
-You should see nodes representing ingested documents.
-
-## 9. Run Inference Against Corpus via CLI
-
-Find the inference endpoint in `/docs`.
-
-Example:
-
-```bash
-curl -X POST http://localhost:8880/v1/chat/completions \
-  -H "Content-Type: application/json" \
-  -d '{
-    "model": "microsoft/Phi-3.5-mini-instruct",
-    "messages": [
-      {
-        "role": "user",
-        "content": "Explain what a REST API is in one sentence."
-      }
-    ],
-    "top_k": 5
-  }'
-```
-
-Expected behavior:
-
-* Retrieval over ingested documents
-* Grounded answer using the loaded model
-
-## 9.5 Run Inference Using Chat UI
-
-Open the chat interface:
-
-`http://localhost:8080`
-
-Enter a question such as:
-
-> What is a REST API?
-
-The Chat UI will send the request to the ATOMIC API and return a grounded answer based on your corpus.
-
-![Chat UI](images/quickstart/quickstart-chat-ui.png)
-
-![Chat Examples](images/quickstart/quickstart-troubleshooting.png)
-
-## 9.6 Troubleshooting
-
-If the API does not respond:
-
-Check container status:
-
-```bash
-docker ps
-```
-
-View logs for the API container:
-
-```bash
-docker logs atomic-community
-```
-
-View logs for the chat UI:
-
-```bash
-docker logs atomic-chat-web
-```
-
-View Neo4j logs:
-
-```bash
-docker logs atomic-neo4j
-```
-
-
-## 10. Stopping the Stack
-
-```bash
-docker compose down
-```
-
-Reset everything, including Neo4j data:
-
-```bash
-docker compose down -v
-```
+- Learn each screen in [Using ATOMIC Current](app-guide.md).
+- Prepare stronger documents with [Corpus cookbooks](corpus-cookbooks.md).
+- Add organizational context with [Knowledge foundation](knowledge-foundation.md).
+- Diagnose a problem with [Troubleshooting](troubleshooting.md).

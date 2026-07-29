@@ -7,7 +7,7 @@
     <title>ATōMIC ToolKit Community Edition Docs</title>
     <meta
       name="description"
-      content="Documentation for the ATōMIC ToolKit Community Edition"
+      content="ATōMIC ToolKit and ATOMIC Current setup, corpus, grounded inference, validation, and local API documentation"
     />
     <link
       rel="stylesheet"
@@ -22,6 +22,18 @@
         max-width: 100%;
         height: auto;
         border-radius: 8px;
+      }
+
+      .markdown-section table {
+        display: table;
+        width: 100%;
+      }
+
+      @media (max-width: 720px) {
+        .markdown-section table {
+          display: block;
+          overflow-x: auto;
+        }
       }
     </style>
   </head>
@@ -38,7 +50,9 @@
         coverpage: true,
         onlyCover: false,
         subMaxLevel: 2,
+        maxLevel: 3,
         auto2top: true,
+        executeScript: false,
         relativePath: false,
         alias: {
           '/.*/_sidebar.md': '/_sidebar.md',
@@ -58,5 +72,6 @@
     <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/plugins/emoji.min.js"></script>
     <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/plugins/zoom-image.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/docsify-copy-code@2/dist/docsify-copy-code.min.js"></script>
   </body>
 </html>

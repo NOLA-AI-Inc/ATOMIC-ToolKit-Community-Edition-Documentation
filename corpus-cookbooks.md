@@ -1,9 +1,11 @@
-
-# 3. Corpus Cookbooks
-
 # Corpus Cookbooks
 
-Corpus Cookbooks walk you step-by-step from raw data to a production-ready corpus export compatible with the ATOMIC SDK Ingest pipeline.
+Corpus Cookbooks walk you step-by-step from raw data to a production-ready
+corpus export compatible with ATOMIC Current and the ATOMIC SDK ingest pipeline.
+
+Use [Knowledge foundation](knowledge-foundation.md) when the source is an
+organizational standard or policy. Ownership, scope, status, and effective dates
+matter as much as the text itself.
 
 All corpus builds follow the same 6 stages:
 
@@ -411,4 +413,6 @@ You can:
 - ingest parquet
 - run inference
 
-The system now reasons over structured, template-encoded knowledge.
+The system can now retrieve structured, template-encoded knowledge. Validate it
+with a question whose answer is unique to the ingested source and confirm that
+the response reports grounding/provenance rather than only plausible prose.
