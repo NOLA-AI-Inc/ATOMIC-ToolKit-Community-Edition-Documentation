@@ -67,8 +67,9 @@ If it fails:
    the container is running with `docker compose ps`.
 2. On macOS, re-read `launcher_ports.env`; do not assume port `8880`. On
    Windows/Linux the port is always `8880` unless you changed the compose file.
-3. Inspect the end of `atk.log` (macOS) or `docker compose logs atomic-current`
-   (Windows/Linux) for a startup or port error.
+3. Inspect the end of `atk.log` (macOS) or
+   `docker compose logs --tail 100 atomic-current` (Windows/Linux) for a
+   startup or port error.
 4. Restart from the app (macOS) or with `docker compose restart atomic-current`
    (Windows/Linux) after preserving any useful error details.
 5. Confirm security software or a firewall is not blocking loopback

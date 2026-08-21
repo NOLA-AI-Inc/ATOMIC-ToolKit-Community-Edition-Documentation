@@ -11,9 +11,10 @@ platform.
 ### macOS
 
 Requires macOS 12 or newer on Apple Silicon (M-series) with at least 16 GB of
-unified memory. Download the `.pkg` supplied by your organization, then move
-**ATOMIC Current.app** to Applications. Allow at least 30 GB of free disk
-space, plus space for source documents and downloaded models.
+unified memory. Download the `.pkg` supplied by your organization and run the
+installer. Confirm **ATOMIC Current.app** is in Applications. Allow at least
+30 GB of free disk space, plus space for source documents and downloaded
+models.
 
 ### Windows (via WSL2)
 
@@ -46,21 +47,29 @@ workloads.
 
 ### Windows and Linux: run the Docker Compose stack
 
-1. Create the data directory and fix ArcadeDB permissions (the container runs
-   internally as uid 1000):
+1. Create the data directory:
 
    ```bash
    mkdir -p data/arcadedb_data
-   chmod 777 data/arcadedb_data
    ```
-2. Save the `docker-compose.yml` provided at
+2. Fix ArcadeDB permissions. The container runs internally as uid 1000. If
+   your account is also uid 1000 (the default for the first user on most
+   fresh Ubuntu/WSL installs — check with `id -u`), you can skip this step.
+   Otherwise, grant the container owner access while keeping the directory in
+   your own group so you don't lose access to it:
+
+   ```bash
+   sudo chown -R 1000:$(id -g) data/arcadedb_data
+   sudo chmod -R 2770 data/arcadedb_data
+   ```
+3. Save the `docker-compose.yml` provided at
    [atomizer.ai/get-started](https://atomizer.ai/get-started) alongside that
    `data/` directory, then start the stack:
 
    ```bash
    docker compose up -d
    ```
-3. Watch startup (first boot downloads model weights):
+4. Watch startup (first boot downloads model weights):
 
    ```bash
    docker compose logs -f atomic-current

@@ -127,8 +127,9 @@ embedded database.
 The Docker Compose deployment keeps runtime state in the bind-mounted `data/`
 directory next to your `docker-compose.yml`, including the ArcadeDB database
 under `data/arcadedb_data`. There is no `launcher_ports.env`; the API is always
-published on `http://localhost:8880`. Use `docker compose logs -f
-atomic-current` for the application log instead of reading a file directly.
+published on `http://localhost:8880`. Use
+`docker compose logs -f atomic-current` for the application log instead of
+reading a file directly.
 
 ## Configuration principles
 
