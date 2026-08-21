@@ -1,4 +1,4 @@
-* [ATōMIC ToolKit Docs](/)
+* [ATōMIC Current Docs](/)
 
 * Getting started
   * [Overview](/)

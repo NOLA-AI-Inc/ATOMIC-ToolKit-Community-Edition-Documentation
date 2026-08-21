@@ -50,6 +50,10 @@ On macOS, a local companion can read the effective URL from:
 ~/Library/Application Support/ATK/launcher_ports.env
 ```
 
+On Windows (via WSL2) and Linux, ATOMIC Current runs as a Docker Compose stack
+and always publishes the API on `http://localhost:8880` — treat that as fixed
+configuration rather than something to discover.
+
 For a remote or managed deployment, make the base URL explicit configuration.
 Do not assume `8880` will always be free.
 

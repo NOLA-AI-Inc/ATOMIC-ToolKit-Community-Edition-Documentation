@@ -1,16 +1,18 @@
 # Using ATOMIC Current
 
-ATOMIC Current combines the local ATK service and its browser interface. The
-menu-bar process owns startup and shutdown; the browser provides the working
-applications. Visible applications depend on edition and user permissions.
+ATOMIC Current combines the local ATK service and its browser interface. On
+macOS, a menu-bar process owns startup and shutdown; on Windows (via WSL2) and
+Linux, a Docker Compose stack owns it instead. The browser provides the working
+applications either way. Visible applications depend on edition and user
+permissions.
 
 ## Start and reopen the interface
 
-Launch **ATOMIC Current** from Applications and leave its menu-bar item running.
-The launcher normally opens the interface automatically.
+On macOS, launch **ATOMIC Current** from Applications and leave its menu-bar
+item running. The launcher normally opens the interface automatically.
 
-ATK prefers port `8880` and selects another free port when needed. The effective
-URLs are recorded in:
+ATK prefers port `8880` and selects another free port when needed on macOS. The
+effective URLs are recorded in:
 
 ```text
 ~/Library/Application Support/ATK/launcher_ports.env
@@ -18,6 +20,11 @@ URLs are recorded in:
 
 Do not bookmark a guessed port on machines where other local services may use
 it. Use the URL reported by the current launcher session.
+
+On Windows and Linux, run `docker compose up -d` and open
+`http://localhost:8880` once `docker compose logs -f atomic-current` reports
+the service healthy. This port is fixed by `docker-compose.yml`, so there is no
+launcher port file to read.
 
 ## The applications
 
@@ -114,6 +121,14 @@ Important files include:
 These files are operational state, not an integration interface. External
 applications should call the HTTP API instead of reading or modifying the
 embedded database.
+
+## Local files on Windows (WSL2) and Linux
+
+The Docker Compose deployment keeps runtime state in the bind-mounted `data/`
+directory next to your `docker-compose.yml`, including the ArcadeDB database
+under `data/arcadedb_data`. There is no `launcher_ports.env`; the API is always
+published on `http://localhost:8880`. Use `docker compose logs -f
+atomic-current` for the application log instead of reading a file directly.
 
 ## Configuration principles
 

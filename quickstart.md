@@ -5,21 +5,83 @@ grounded answer.
 
 ## 1. Install ATOMIC Current
 
-ATOMIC Current requires macOS 12 or newer. Download the edition supplied by
-your organization or visit [atomizer.ai/get-started](https://atomizer.ai/get-started),
-then move **ATOMIC Current.app** to Applications.
+Visit [atomizer.ai/get-started](https://atomizer.ai/get-started) and pick your
+platform.
 
-Allow at least 30 GB of free disk space, plus space for source documents and
-downloaded models.
+### macOS
+
+Requires macOS 12 or newer on Apple Silicon (M-series) with at least 16 GB of
+unified memory. Download the `.pkg` supplied by your organization, then move
+**ATOMIC Current.app** to Applications. Allow at least 30 GB of free disk
+space, plus space for source documents and downloaded models.
+
+### Windows (via WSL2)
+
+1. Open PowerShell **as Administrator** and install WSL2 with Ubuntu:
+
+   ```powershell
+   wsl --install
+   ```
+
+   Restart your computer when prompted.
+2. Launch **Ubuntu** from the Start Menu and create a UNIX username/password.
+3. Install [Docker Desktop for Windows](https://www.docker.com/products/docker-desktop/),
+   then in Settings enable:
+   - General → "Use the WSL 2 based engine"
+   - Resources → WSL Integration → enable your Ubuntu distro
+4. Run every command below from the **Ubuntu** terminal, not PowerShell or
+   Command Prompt.
+
+An NVIDIA GPU with at least 24 GB of VRAM is recommended for inference; AMD
+GPUs are not supported. CPU-only inference works for evaluation but is not
+recommended for production workloads.
+
+### Linux
+
+Requires Docker and the Docker Compose plugin. An NVIDIA GPU with at least
+24 GB of VRAM is recommended for inference; AMD GPUs are not supported. Install
+the NVIDIA Container Toolkit (`nvidia-smi` should work inside containers).
+CPU-only inference works for evaluation but is not recommended for production
+workloads.
+
+### Windows and Linux: run the Docker Compose stack
+
+1. Create the data directory and fix ArcadeDB permissions (the container runs
+   internally as uid 1000):
+
+   ```bash
+   mkdir -p data/arcadedb_data
+   chmod 777 data/arcadedb_data
+   ```
+2. Save the `docker-compose.yml` provided at
+   [atomizer.ai/get-started](https://atomizer.ai/get-started) alongside that
+   `data/` directory, then start the stack:
+
+   ```bash
+   docker compose up -d
+   ```
+3. Watch startup (first boot downloads model weights):
+
+   ```bash
+   docker compose logs -f atomic-current
+   ```
+
+Self-hosting on Windows or Linux requires accepting the license agreement
+shown at [atomizer.ai/get-started](https://atomizer.ai/get-started) before the
+compose file is available for download.
 
 ## 2. Launch the app
 
-Open **ATOMIC Current** from Applications. It runs as a menu-bar application,
-starts the local service, and opens the interface in your default browser.
+On macOS, open **ATOMIC Current** from Applications. It runs as a menu-bar
+application, starts the local service, and opens the interface in your default
+browser.
+
+On Windows and Linux, once `atomic-current` reports healthy in the compose
+logs, open the interface directly in your browser.
 
 The first startup can take several minutes while ATK initializes its embedded
-database or obtains a configured model. Keep the menu-bar app running while you
-use the interface.
+database or obtains a configured model. Keep the menu-bar app (macOS) or the
+Docker stack (Windows/Linux) running while you use the interface.
 
 The preferred URL is:
 
@@ -27,12 +89,15 @@ The preferred URL is:
 http://127.0.0.1:8880/
 ```
 
-If that port is busy, the launcher chooses another one. On macOS, read the
+On macOS, if that port is busy the launcher chooses another one. Read the
 effective URL with:
 
 ```bash
 grep '^ATOMIC_API_URL=' "$HOME/Library/Application Support/ATK/launcher_ports.env"
 ```
+
+On Windows and Linux, the Docker Compose stack always publishes the API on
+`http://localhost:8880` — there is no `launcher_ports.env` to read.
 
 ## 3. Create or sign in to your account
 

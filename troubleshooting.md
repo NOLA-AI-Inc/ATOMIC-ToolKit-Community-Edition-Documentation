@@ -19,8 +19,8 @@ corpus text.
 
 ## The app does not open a browser
 
-ATOMIC Current is a menu-bar application. Confirm its menu-bar item is running,
-then inspect:
+On macOS, ATOMIC Current is a menu-bar application. Confirm its menu-bar item
+is running, then inspect:
 
 ```bash
 grep '^ATOMIC_API_URL=' "$HOME/Library/Application Support/ATK/launcher_ports.env"
@@ -30,24 +30,49 @@ tail -n 100 "$HOME/Library/Application Support/ATK/atk.log"
 Open the recorded URL manually. The launcher prefers `8880` but automatically
 selects another free port when necessary.
 
+On Windows (WSL2) and Linux, ATOMIC Current runs as a Docker Compose stack and
+does not open a browser itself. Check container status and logs instead:
+
+```bash
+docker compose ps
+docker compose logs -f atomic-current
+```
+
+Open `http://localhost:8880` manually once the container reports healthy; this
+port is fixed and does not change between runs.
+
 On a first run, model or database initialization may take several minutes. The
-launcher can wait substantially longer than an ordinary web request, so use the
-log to distinguish cold startup from a failed process.
+launcher (or the container's healthcheck) can wait substantially longer than an
+ordinary web request, so use the log to distinguish cold startup from a failed
+process.
 
 ## Health endpoint cannot connect
+
+On macOS:
 
 ```bash
 ATK_URL=$(sed -n 's/^ATOMIC_API_URL=//p' "$HOME/Library/Application Support/ATK/launcher_ports.env")
 curl -sS --max-time 5 "$ATK_URL/v1/health"
 ```
 
+On Windows (WSL2) and Linux, the port is fixed:
+
+```bash
+curl -sS --max-time 5 http://localhost:8880/v1/health
+```
+
 If it fails:
 
-1. Confirm the menu-bar app is running.
-2. Re-read `launcher_ports.env`; do not assume port `8880`.
-3. Inspect the end of `atk.log` for a startup or port error.
-4. Restart from the app after preserving any useful error details.
-5. Confirm security software is not blocking loopback connections.
+1. On macOS, confirm the menu-bar app is running; on Windows/Linux, confirm
+   the container is running with `docker compose ps`.
+2. On macOS, re-read `launcher_ports.env`; do not assume port `8880`. On
+   Windows/Linux the port is always `8880` unless you changed the compose file.
+3. Inspect the end of `atk.log` (macOS) or `docker compose logs atomic-current`
+   (Windows/Linux) for a startup or port error.
+4. Restart from the app (macOS) or with `docker compose restart atomic-current`
+   (Windows/Linux) after preserving any useful error details.
+5. Confirm security software or a firewall is not blocking loopback
+   connections.
 
 ## The interface loads but login fails
 
@@ -175,13 +200,26 @@ The app may rotate logs. Capture the relevant time window soon after a failure.
 Treat configuration and logs as sensitive because they can reveal local paths,
 user details, provider names, or source identifiers.
 
+## Find logs and configuration on Windows (WSL2) and Linux
+
+Runtime state lives in the bind-mounted `data/` directory next to your
+`docker-compose.yml`. There is no `launcher_ports.env` or `atk.log` file to
+read directly; use Docker's own tooling instead:
+
+```bash
+docker compose logs --tail 100 atomic-current
+docker compose ps
+```
+
+Treat this log output as sensitive for the same reasons as the macOS files.
+
 ## Report a reproducible issue
 
 Include:
 
 ```text
 ATOMIC Current version:
-macOS version and architecture:
+Platform (macOS / Windows WSL2 / Linux) and architecture:
 effective ATK URL (no credentials):
 screen or HTTP method/path:
 time of failure:
