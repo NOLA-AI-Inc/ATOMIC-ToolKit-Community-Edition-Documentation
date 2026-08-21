@@ -1,8 +1,10 @@
-# ATōMIC ToolKit documentation
+# ATōMIC Current documentation
 
-ATōMIC ToolKit (ATK) turns source material into a provenance-aware corpus for
-grounded search, inference, and validation. ATOMIC Current packages the local
-service and browser interface into a macOS menu-bar application.
+ATK turns source material into a provenance-aware corpus for grounded search,
+inference, and validation. ATOMIC Current packages the local service and
+browser interface for local self-hosting. On macOS it runs as a native
+menu-bar application; on Windows (via WSL2) and Linux it runs as a Docker
+Compose stack.
 
 > Last verified: 2026-07-22 against ATOMIC Current 1.422.13 with the 1.4.22
 > backend. An edition may hide features that are not licensed or permitted for
@@ -19,6 +21,19 @@ service and browser interface into a macOS menu-bar application.
 | Prepare useful source material | [Corpus cookbooks](corpus-cookbooks.md) |
 | Build owner-approved organizational knowledge | [Knowledge foundation](knowledge-foundation.md) |
 | Diagnose startup, authentication, ingestion, or grounding | [Troubleshooting](troubleshooting.md) |
+
+## System requirements
+
+| Platform | Requirement |
+|---|---|
+| macOS | Apple Silicon (M-series), macOS 12+, at least 16 GB of unified memory |
+| Windows (via WSL2) | Docker Desktop with WSL2, NVIDIA GPU with at least 24 GB of VRAM recommended for inference; AMD GPUs are not supported |
+| Linux | Docker + Docker Compose plugin, NVIDIA GPU with at least 24 GB of VRAM recommended for inference; AMD GPUs are not supported |
+
+CPU-only inference works for evaluation on Windows and Linux but is not
+recommended for production workloads. All platforms need at least 30 GB of
+free disk space, plus space for source documents and downloaded models. See
+[Quickstart](quickstart.md) for per-platform install steps.
 
 ## How the current product works
 
@@ -52,13 +67,17 @@ one whose evidence can be followed back to an ingested source.
 
 On macOS, launch **ATOMIC Current** from Applications. The app starts the local
 service and opens its interface in a browser. The preferred API port is `8880`,
-but the launcher selects another free port when necessary.
-
-The effective URL is recorded in:
+but the launcher selects another free port when necessary. The effective URL is
+recorded in:
 
 ```text
 ~/Library/Application Support/ATK/launcher_ports.env
 ```
+
+On Windows (via WSL2) and Linux, ATOMIC Current runs as a Docker Compose stack
+and always publishes the API on `http://localhost:8880` — there is no
+`launcher_ports.env` to read. Use `docker compose logs -f atomic-current` to
+watch startup.
 
 The health endpoint is public:
 

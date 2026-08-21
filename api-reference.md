@@ -8,8 +8,8 @@ by the current app; an edition may omit routes that are not enabled.
 
 ## Discover the base URL
 
-The preferred base URL is `http://127.0.0.1:8880`. The macOS launcher chooses a
-different free port when required and writes the effective value to:
+The preferred base URL is `http://127.0.0.1:8880`. On macOS, the launcher
+chooses a different free port when required and writes the effective value to:
 
 ```text
 ~/Library/Application Support/ATK/launcher_ports.env
@@ -21,6 +21,10 @@ Example:
 ATK_URL=$(sed -n 's/^ATOMIC_API_URL=//p' "$HOME/Library/Application Support/ATK/launcher_ports.env")
 curl -sS "$ATK_URL/v1/health"
 ```
+
+On Windows (via WSL2) and Linux, ATOMIC Current runs as a Docker Compose stack
+that always publishes the API on `http://localhost:8880` — there is no
+`launcher_ports.env` to read, and no fallback port to discover.
 
 Treat `/v1/health` as reachability only. Most `/v1/*` routes require an
 authenticated user.

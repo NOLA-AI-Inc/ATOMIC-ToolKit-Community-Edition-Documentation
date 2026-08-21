@@ -1,23 +1,17 @@
 # Using ATOMIC Current
 
-ATOMIC Current combines the local ATK service and its browser interface. The
-menu-bar process owns startup and shutdown; the browser provides the working
-applications. Visible applications depend on edition and user permissions.
+ATOMIC Current combines the local ATK service and its browser interface. On
+macOS, a menu-bar process owns startup and shutdown; on Windows (via WSL2) and
+Linux, a Docker Compose stack owns it instead. The browser provides the working
+applications either way. Visible applications depend on edition and user
+permissions.
 
 ## Start and reopen the interface
 
-Launch **ATOMIC Current** from Applications and leave its menu-bar item running.
-The launcher normally opens the interface automatically.
+Startup, the interface URL, and local runtime files differ by platform:
 
-ATK prefers port `8880` and selects another free port when needed. The effective
-URLs are recorded in:
-
-```text
-~/Library/Application Support/ATK/launcher_ports.env
-```
-
-Do not bookmark a guessed port on machines where other local services may use
-it. Use the URL reported by the current launcher session.
+- [Using ATOMIC Current on macOS](app-guide-macos.md)
+- [Using ATOMIC Current on Windows and Linux](app-guide-windows-linux.md)
 
 ## The applications
 
@@ -94,34 +88,14 @@ Settings reads the server's current schema, validates supported values, and can
 apply runtime or persistent updates. Prefer it over manually editing internal
 state. Persistent changes may require an application restart.
 
-## Local files on macOS
-
-ATOMIC Current stores user-specific runtime state under:
-
-```text
-~/Library/Application Support/ATK/
-```
-
-Important files include:
-
-| File | Purpose |
-|---|---|
-| `launcher_ports.env` | Effective API, WebSocket, and embedded-database ports |
-| `config.env` | Persistent local configuration |
-| `atk.log` | Current application log |
-| `atk.*.log` | Rotated application logs |
-
-These files are operational state, not an integration interface. External
-applications should call the HTTP API instead of reading or modifying the
-embedded database.
-
 ## Configuration principles
 
 - Use Settings when a supported field is available there.
 - Back up `config.env` before a manual change.
 - Restart the app after a persistent setting that requires it.
-- Read `launcher_ports.env` again after every launch if your integration depends
-  on automatic port discovery.
+- Rediscover the effective ports and URL after every launch if your
+  integration depends on automatic discovery — see the platform guide above
+  for where each platform records this.
 - Never place model, Atomizer, or ATK API credentials in documentation or a
   shared repository.
 
