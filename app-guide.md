@@ -8,23 +8,10 @@ permissions.
 
 ## Start and reopen the interface
 
-On macOS, launch **ATOMIC Current** from Applications and leave its menu-bar
-item running. The launcher normally opens the interface automatically.
+Startup, the interface URL, and local runtime files differ by platform:
 
-ATK prefers port `8880` and selects another free port when needed on macOS. The
-effective URLs are recorded in:
-
-```text
-~/Library/Application Support/ATK/launcher_ports.env
-```
-
-Do not bookmark a guessed port on machines where other local services may use
-it. Use the URL reported by the current launcher session.
-
-On Windows and Linux, run `docker compose up -d` and open
-`http://localhost:8880` once `docker compose logs -f atomic-current` reports
-the service healthy. This port is fixed by `docker-compose.yml`, so there is no
-launcher port file to read.
+- [Using ATOMIC Current on macOS](app-guide-macos.md)
+- [Using ATOMIC Current on Windows and Linux](app-guide-windows-linux.md)
 
 ## The applications
 
@@ -101,43 +88,14 @@ Settings reads the server's current schema, validates supported values, and can
 apply runtime or persistent updates. Prefer it over manually editing internal
 state. Persistent changes may require an application restart.
 
-## Local files on macOS
-
-ATOMIC Current stores user-specific runtime state under:
-
-```text
-~/Library/Application Support/ATK/
-```
-
-Important files include:
-
-| File | Purpose |
-|---|---|
-| `launcher_ports.env` | Effective API, WebSocket, and embedded-database ports |
-| `config.env` | Persistent local configuration |
-| `atk.log` | Current application log |
-| `atk.*.log` | Rotated application logs |
-
-These files are operational state, not an integration interface. External
-applications should call the HTTP API instead of reading or modifying the
-embedded database.
-
-## Local files on Windows (WSL2) and Linux
-
-The Docker Compose deployment keeps runtime state in the bind-mounted `data/`
-directory next to your `docker-compose.yml`, including the ArcadeDB database
-under `data/arcadedb_data`. There is no `launcher_ports.env`; the API is always
-published on `http://localhost:8880`. Use
-`docker compose logs -f atomic-current` for the application log instead of
-reading a file directly.
-
 ## Configuration principles
 
 - Use Settings when a supported field is available there.
 - Back up `config.env` before a manual change.
 - Restart the app after a persistent setting that requires it.
-- Read `launcher_ports.env` again after every launch if your integration depends
-  on automatic port discovery.
+- Rediscover the effective ports and URL after every launch if your
+  integration depends on automatic discovery — see the platform guide above
+  for where each platform records this.
 - Never place model, Atomizer, or ATK API credentials in documentation or a
   shared repository.
 
