@@ -1,8 +1,8 @@
-# ATōMIC Current
+# AtomicIQ
 
 > Local, provenance-aware knowledge for grounded search, inference, and validation.
 
-- Run ATOMIC Current on macOS, Windows, or Linux
+- Run AtomicIQ on macOS, Windows, or Linux
 - Build and inspect a reusable corpus
 - Ask questions grounded in your own sources
 - Integrate trusted applications through the local API

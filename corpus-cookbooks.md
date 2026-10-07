@@ -1,418 +1,146 @@
 # Corpus Cookbooks
 
-Corpus Cookbooks walk you step-by-step from raw data to a production-ready
-corpus export compatible with ATOMIC Current and the ATOMIC SDK ingest pipeline.
+Practical recipes for turning raw source material into a corpus AtomicIQ can
+ground Chat and Tasks against. There is no separate dataset-authoring tool —
+you ingest files directly through the **Library** app's **Add documents** tab
+or `POST /v1/ingest/file`, the same way for every source type below.
 
 Use [Knowledge foundation](knowledge-foundation.md) when the source is an
-organizational standard or policy. Ownership, scope, status, and effective dates
-matter as much as the text itself.
+organizational standard or policy. Ownership, scope, status, and effective
+dates matter as much as the text itself.
 
-All corpus builds follow the same 6 stages:
+## Supported file types
 
-1. Select Data Source
-2. Define Meaningful Templates
-3. Add Document Metadata
-4. Approve / Reject Generated Training Rows
-5. Export Dataset
-6. Download as **Corpus (SDK Ingest)**
+- Markdown / plain text (`.md`, `.txt`)
+- PDF (`.pdf`)
+- Word documents (`.docx`)
+- Spreadsheets (`.xlsx`, `.xls`, `.ods`, `.csv`, `.tsv`)
+- JSON Lines (`.jsonl`)
+- Certified knowledge packs (`.nola-pack`)
 
----
+AtomicIQ parses each file into the embedded corpus store (LanceDB + RocksDB +
+OverGraph) — there is no intermediate export/approval step and no row-level
+template authoring. Prepare the file so it reads cleanly, then ingest it.
 
-## General Workflow Guide
+## General workflow
 
-![Workflow](images/cookbooks/cookbooks-workflow.png)
-
-### Step 1 — Select Dataset Source
-
-You have two ingestion paths:
-
-#### Option A: File Upload
-
-Upload:
-- CSV
-- Parquet
-- JSON
-- Markdown
-- PDF
-- Audio / Video (auto-processed)
-
-Best for:
-- Personal datasets
-- Exports (Substack, internal docs)
-- Slides
-- Cleaned corpora
-
-#### Option B: HuggingFace Dataset Import
-
-Connect to Hugging Face and import:
-- FineWeb
-- Open datasets
-- Custom HF repositories
-
-Best for:
-- Large public corpora
-- Research datasets
-- Pre-curated structured data
-
-### Step 2 — Define Meaningful Templates
-
-![Templates](images/cookbooks/cookbooks-template-builder.png)
-
-Templates convert raw rows into structured training statements.
-
-You use:
-
-`@column_name`
-
-to reference dataset fields.
-
-Example:
-
-If your dataset has:
-
-`title`, `subtitle`, `body`
-
-You can define:
-
-**Prompt**  
-What is the title of "@title"?
-
-**Answer**  
-The title is "@title".
-
-Or:
-
-**Prompt**  
-Summarize the following article:  
-@body
-
-**Answer**  
-@body
-
-Templates determine:
-- How your corpus thinks
-- What relationships are encoded
-- What kinds of questions the model can answer
-
-Think of this step as **schema design for intelligence**.
-
-### Step 3 — Add Metadata
-
-![Metadata](images/cookbooks/cookbooks-metadata.png)
-
-Attach contextual grounding:
-- Document Title
-- Publication Date
-- Authors
-- Categories
-
-Metadata improves:
-- Filtering
-- Retrieval ranking
-- Attribution logic
-- Contextual inference
-
-Best practice:
-
-Use consistent categories like:
-- Newsletter
-- Academic
-- Conversation
-- Research
-- Lecture
-
-### Step 4 — Approve Training Rows
-
-![Approve Rows](images/cookbooks/cookbooks-approve-rows.png)
-
-The system generates candidate prompt/answer rows.
-
-You can:
-- Approve individually
-- Bulk approve
-- Reject noisy rows
-- Edit specific rows
-
-This is where you control signal quality.
-
-High approval discipline = higher quality corpus.
-
-### Step 5 — Export Dataset
-
-![Export](images/cookbooks/cookbooks-export.png)
-
-Click **Export**.
-
-Choose:
-- Include unapproved rows (usually **No**)
-- Force re-export (only if modifying templates)
-
-### Step 6 — Download as “Corpus (SDK Ingest)”
-
-![SDK Ingest](images/cookbooks/cookbooks-sdk-ingest.png)
-
-Select:
-
-**Corpus (SDK Ingest)**
-
-This produces a parquet file formatted exactly for downstream ingestion into ATOMIC.
-
-This file is now ready for:
-- clear corpus
-- ingest parquet
-- run inference
+1. Convert or export your source material into one of the supported file
+   types above.
+2. Split very large or multi-topic sources into smaller files — one file per
+   article, chapter, or document works better for retrieval than one giant
+   file.
+3. Add a short title/date/author header at the top of each file (or use
+   spreadsheet columns for the same fields) so AtomicIQ can surface
+   attribution alongside answers.
+4. Open **Library → Add documents** in the app (or call `POST /v1/ingest/file`) and
+   upload the file(s). Use `POST /v1/clear-corpus` first if you are replacing
+   an existing corpus rather than adding to it.
+5. Validate with a question whose answer is unique to the ingested source,
+   and confirm the response reports grounding/citations rather than only
+   plausible prose — see [Local API reference](api-reference.md) for the
+   `citations` field shape.
 
 ---
 
-## Cookbook A: Substack Articles → Writing Assistant
+## Cookbook A: Substack articles → writing assistant
 
 ### Goal
 
-Build a model that writes like you.
+Build a corpus that can answer questions about your past articles and
+continue writing in your voice.
 
-### Step 1 — Upload Dataset
+### Prepare
 
-Upload:
-- `stitched_posts.csv`
-- or `stitched_posts.parquet`
+Export your posts (Substack's export gives HTML/Markdown per post) and save
+each article as its own `.md` file, named after the post slug. Put the title,
+subtitle, and publish date at the top of each file:
 
-Expected columns:
-- `title`
-- `subtitle`
-- `slug`
-- `post_date`
-- `text`
+```markdown
+# The title of the post
 
-### Step 2 — Templates
+_Subtitle — published 2026-01-14_
 
-#### Template 1 — Title Retrieval
+Body text of the article starts here...
+```
 
-**Prompt**  
-What is the title of the post with id @slug?
+### Ingest
 
-**Answer**  
-The title is "@title".
+Upload the folder of `.md` files via **Library → Add documents**. Reject or fix
+articles with broken formatting or truncated bodies before uploading — clean
+input produces a cleaner corpus than a bulk dump.
 
-#### Template 2 — Subtitle Retrieval
+### Result
 
-**Prompt**  
-What is the subtitle of "@title"?
-
-**Answer**  
-The subtitle is "@subtitle".
-
-#### Template 3 — Writing Style Embedding
-
-**Prompt**  
-Continue writing in the style of the following article:  
-@text
-
-**Answer**  
-@text
-
-#### Template 4 — Thematic Summary
-
-**Prompt**  
-Summarize the themes of "@title".
-
-**Answer**  
-@text
-
-### Step 3 — Metadata
-
-- Title: Substack Posts
-- Category: Newsletter, Writing
-- Author: Your name
-- Date: Original publish date
-
-### Step 4 — Approve
-
-Reject:
-- Broken HTML
-- Short metadata rows
-- Empty text fields
-
-### Step 5–6 — Export → Corpus (SDK Ingest)
-
-This corpus now enables:
-- Style imitation
-- Topic recall
-- Article referencing
-- Tone continuation
+A corpus that supports style imitation, topic recall, and article
+referencing in Chat.
 
 ---
 
-## Cookbook B: Academic Slides → Study Bot
+## Cookbook B: Academic slides → study bot
 
 ### Goal
 
-Create a test-prep assistant.
+Create a test-prep assistant grounded in lecture material.
 
-### Step 1 — Upload
+### Prepare
 
-Upload:
-- Lecture slides PDF
-- Extracted CSV
-- Markdown notes
+Export lecture decks as PDF (most slide tools support this directly). Where
+slides are sparse ("Agenda", title-only slides), either delete them from the
+export or merge them with the following content slide so each page carries
+real information.
 
-Expected columns:
-- `slide_title`
-- `slide_number`
-- `content`
-- `course_name`
+### Ingest
 
-### Step 2 — Templates
+Upload the PDFs via **Library → Add documents**, one file per lecture or course
+module. Add course name and subject as part of the filename or a short header
+line so retrieval can be filtered/attributed by course later.
 
-#### Template 1 — Flashcards
+### Result
 
-**Prompt**  
-What is the key concept in slide @slide_number?
-
-**Answer**  
-@content
-
-#### Template 2 — Definition Builder
-
-**Prompt**  
-Define the following term:  
-@slide_title
-
-**Answer**  
-@content
-
-#### Template 3 — Exam Style Question
-
-**Prompt**  
-Explain the concept of "@slide_title" as it appears in the course.
-
-**Answer**  
-@content
-
-### Step 3 — Metadata
-
-Categories:
-- Course Name
-- Subject Area
-- Exam Type
-
-### Step 4 — Approve
-
-Reject:
-- Decorative slides
-- Agenda slides
-- Empty bullet pages
-
-### Export → Corpus (SDK Ingest)
-
-Result:
-- Retrieval-aware study assistant
-- Flashcard generator
-- Contextual answer bot
+A retrieval-aware study assistant that can answer concept questions and
+summarize lecture content with citations back to the source deck.
 
 ---
 
-## Cookbook C: FineWeb from HuggingFace → Knowledge Corpus
+## Cookbook C: Large reference corpus
 
 ### Goal
 
-Import a large web-scale corpus.
+Ingest a large body of reference material (an internal wiki export, a
+documentation set, or a public corpus you already have locally as text/PDF).
 
-### Step 1 — HuggingFace Import
+### Prepare
 
-Select:
+Keep the natural document boundaries from the source — one file per page or
+chapter — rather than concatenating everything into a single file. Very large
+single files are slower to retrieve against precisely and make citations
+coarser.
 
-`Dataset Import → HuggingFace`
+### Ingest
 
-Choose:
+Upload in batches via **Library → Add documents** (or script it against
+`POST /v1/ingest/file`) and check `GET /v1/ingest/jobs` for progress on each
+batch. See [Integration guide](developer-workflow.md) for the scripted
+ingestion flow.
 
-`HuggingFaceH4/fineweb`
+### Result
 
-or your desired subset.
-
-### Step 2 — Templates
-
-FineWeb typically contains:
-- `text`
-- `metadata`
-- `url`
-
-#### Template 1 — Contextual QA
-
-**Prompt**  
-Answer a question based on the following web content:  
-@text
-
-**Answer**  
-@text
-
-#### Template 2 — Factual Extraction
-
-**Prompt**  
-Extract key facts from this article:  
-@text
-
-**Answer**  
-@text
-
-#### Template 3 — URL Grounded
-
-**Prompt**  
-What information does the page @url contain?
-
-**Answer**  
-@text
-
-### Step 3 — Metadata
-
-Category:
-- Web
-- FineWeb
-- Public Corpus
-
-### Step 4 — Approve Strategically
-
-Because FineWeb is large:
-- Consider sampling
-- Reject malformed HTML
-- Reject very short entries
-
-### Export → Corpus (SDK Ingest)
-
-This produces a large structured parquet corpus ready for SDK ingestion.
+A broad knowledge base suitable for grounded Chat and Tasks across the whole
+document set.
 
 ---
 
-## Best Practices Across All Cookbooks
+## Best practices across all cookbooks
 
-1. Templates define intelligence.  
-   Spend time here.
-
-2. Reject noise aggressively.  
-   Garbage in → garbage graph.
-
-3. Use categories consistently.  
-   They become retrieval filters.
-
-4. Separate corpora by use case.  
-   Don’t mix:
-   - Writing style
-   - Academic facts
-   - Conversations
-   - Web crawl
-
----
-
-## What Happens Next
-
-After downloading:
-
-`corpus.parquet`
-
-You can:
-- clear corpus
-- ingest parquet
-- run inference
-
-The system can now retrieve structured, template-encoded knowledge. Validate it
-with a question whose answer is unique to the ingested source and confirm that
-the response reports grounding/provenance rather than only plausible prose.
+1. **Clean input beats clever prompting.** Fix broken formatting, truncated
+   text, and empty files before ingesting rather than relying on the model to
+   compensate.
+2. **One topic per file.** Splitting by article/chapter/slide-deck gives
+   sharper retrieval and citations than one large merged file.
+3. **Carry metadata in the file.** A short title/date/author header (or
+   spreadsheet columns) is the only attribution AtomicIQ has — add it before
+   ingesting, not after.
+4. **Separate corpora by use case.** Don't mix writing-style material,
+   academic reference material, and general web content in the same corpus
+   store if you need distinct behavior — use
+   `POST /v1/admin/store/select` to manage multiple stores.
