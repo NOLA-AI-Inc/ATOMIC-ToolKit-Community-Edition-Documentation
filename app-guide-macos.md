@@ -1,7 +1,7 @@
 # Using AtomicIQ on macOS
 
 Platform-specific startup and local file details for macOS. For the shared
-application walkthrough (Chat, Corpus, Validator, Marketplace, Curator,
+application walkthrough (Chat, Library, Validator, Marketplace, Curator,
 Account, Settings), see [Using AtomicIQ](app-guide.md).
 
 ## Start and reopen the interface

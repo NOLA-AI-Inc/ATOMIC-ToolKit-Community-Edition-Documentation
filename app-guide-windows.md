@@ -1,7 +1,7 @@
 # Using AtomicIQ on Windows
 
 Platform-specific startup and local file details for Windows. For the shared
-application walkthrough (Chat, Corpus, Validator, Marketplace, Curator,
+application walkthrough (Chat, Library, Validator, Marketplace, Curator,
 Account, Settings), see [Using AtomicIQ](app-guide.md).
 
 AtomicIQ on Windows has two installation paths today: the supported Docker

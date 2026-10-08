@@ -2,7 +2,7 @@
 
 Platform-specific startup and local file details for Linux, which runs
 AtomicIQ as a Docker Compose stack. For the shared application walkthrough
-(Chat, Corpus, Validator, Marketplace, Curator, Account, Settings), see
+(Chat, Library, Validator, Marketplace, Curator, Account, Settings), see
 [Using AtomicIQ](app-guide.md). For Windows, see
 [Using AtomicIQ on Windows](app-guide-windows.md) — today it uses the same
 Docker Compose stack described here, with a native app in preview.
