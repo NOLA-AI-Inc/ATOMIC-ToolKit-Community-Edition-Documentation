@@ -137,9 +137,9 @@ document set.
    compensate.
 2. **One topic per file.** Splitting by article/chapter/slide-deck gives
    sharper retrieval and citations than one large merged file.
-3. **Carry metadata in the file.** A short title/date/author header (or
-   spreadsheet columns) is the only attribution AtomicIQ has — add it before
-   ingesting, not after.
+3. **Carry portable metadata with the file.** A short title/date/author header
+   (or spreadsheet columns) keeps attribution attached to the source; when it
+   is absent, supply the corresponding metadata in the upload flow.
 4. **Separate corpora by use case.** Don't mix writing-style material,
    academic reference material, and general web content in the same corpus
    store if you need distinct behavior — use
