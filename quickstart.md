@@ -106,8 +106,12 @@ shown at [atomizer.ai/get-started](https://atomizer.ai/get-started).
          - "${LLAMACPP_N_GPU_LAYERS:-999}"
        volumes:
          - ./data:/app/data:ro
-       ports:
-         - "${LLAMA_SERVER_PORT:-18100}:8080"
+       # llama-server has no authentication of its own. atk-ee reaches it over
+       # the internal Compose network (llama-server:8080), so no host port is
+       # published by default. Uncomment to expose it for local debugging —
+       # keep it loopback-only, never bind it to a non-localhost interface:
+       # ports:
+       #   - "127.0.0.1:${LLAMA_SERVER_PORT:-18100}:8080"
        deploy:
          resources:
            reservations:
