@@ -12,13 +12,14 @@ Docker Compose stack described here, with a native app in preview.
 The compose stack runs two containers: `atk-ee` (the app) and `llama-server`
 (the `llama.cpp` sidecar that serves chat/task inference). 
 
-Run `docker compose up --build` and open `http://localhost:8880` once
-`docker compose logs -f atk-ee` reports the service healthy. On a cold start,
-`llama-server` will exit and restart repeatedly with a "model not found" error
-until `atk-ee` finishes downloading the configured GGUF into the shared `data/`
-volume — `restart: unless-stopped` recovers automatically once the file
-exists. The published port is fixed by `docker-compose.yml` (override with the
-`ATK_PORT` variable in `.env`), so there is no launcher port file to read.
+Run `docker compose up -d` to pull the published image and start the stack,
+then open `http://localhost:8880` once `docker compose logs -f atk-ee` reports
+the service healthy. On a cold start, `llama-server` will exit and restart
+repeatedly with a "model not found" error until `atk-ee` finishes downloading
+the configured GGUF into the shared `data/` volume — `restart: unless-stopped`
+recovers automatically once the file exists. The published port is fixed by
+`docker-compose.yml` (override with the `ATK_PORT` variable in `.env`), so
+there is no launcher port file to read.
 
 ## Local files
 

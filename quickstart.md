@@ -52,23 +52,93 @@ AtomicIQ ships as two containers: the app itself (`atk-ee`) and a `llama.cpp`
 service to run — the corpus store (LanceDB + RocksDB + OverGraph) is embedded
 in the app container.
 
-1. Get the compose example from
-   [atomizer.ai/get-started](https://atomizer.ai/get-started), or from
-   `docker/examples/atomiciq/` if you have the `AtomicAppBuilder` repo checked
-   out. `cd` into that directory.
-2. Copy the starter environment file and adjust it if needed:
+Self-hosting on Windows or Linux requires accepting the license agreement
+shown at [atomizer.ai/get-started](https://atomizer.ai/get-started).
 
-   ```bash
-   cp .env.example .env
+1. Create a project directory and save the following as `docker-compose.yml`.
+   This pulls the published image — no local build or source checkout
+   required. (Community Edition does not include Marketplace/Fleet/Curator;
+   swap the image for `ghcr.io/nola-ai-inc/atomic-community-edition` if that's
+   your entitlement.)
+
+   ```yaml
+   services:
+     atk-ee:
+       image: ghcr.io/nola-ai-inc/atomic-enterprise-edition:${TAG:-latest}
+       environment:
+         ATOMIC_ENGINE: atomiciq
+         models__hf_token: ${HF_TOKEN:-}
+         LLAMA_SERVER_HOST: ${LLAMA_SERVER_HOST:-llama-server}
+         llm__llamacpp_gguf_repo: ${LLAMACPP_GGUF_REPO:-openbmb/MiniCPM5-2B-GGUF}
+         llm__llamacpp_gguf_filename: ${LLAMACPP_GGUF_FILENAME:-MiniCPM5-2B-Q8_0.gguf}
+       volumes:
+         - ./data:/app/data
+       ports:
+         - "${ATK_PORT:-8880}:8880"
+       deploy:
+         resources:
+           reservations:
+             devices:
+               - driver: nvidia
+                 count: 1
+                 capabilities: [gpu]
+       depends_on:
+         - llama-server
+       restart: unless-stopped
+
+     llama-server:
+       image: ${LLAMACPP_IMAGE:-ghcr.io/ggml-org/llama.cpp:server-cuda}
+       hostname: ${LLAMA_SERVER_HOST:-llama-server}
+       networks:
+         default:
+           aliases:
+             - ${LLAMA_SERVER_HOST:-llama-server}
+       command:
+         - --model
+         - /app/data/models/${LLAMACPP_GGUF_FILENAME:-MiniCPM5-2B-Q8_0.gguf}
+         - --host
+         - "0.0.0.0"
+         - --port
+         - "8080"
+         - --ctx-size
+         - "${LLAMACPP_CTX_SIZE:-8192}"
+         - --n-gpu-layers
+         - "${LLAMACPP_N_GPU_LAYERS:-999}"
+       volumes:
+         - ./data:/app/data:ro
+       ports:
+         - "${LLAMA_SERVER_PORT:-18100}:8080"
+       deploy:
+         resources:
+           reservations:
+             devices:
+               - driver: nvidia
+                 count: 1
+                 capabilities: [gpu]
+       restart: unless-stopped
    ```
 
+2. In the same directory, save the following as `.env` and adjust if needed.
    The defaults download `openbmb/MiniCPM5-2B-GGUF` (`MiniCPM5-2B-Q8_0.gguf`)
    with an 8192-token context window. Set `HF_TOKEN` only if your chosen
    repo/filename is gated on Hugging Face.
+
+   ```bash
+   TAG=latest
+   ATK_PORT=8880
+   LLAMA_SERVER_HOST=llama-server
+   LLAMA_SERVER_PORT=18100
+   LLAMACPP_IMAGE=ghcr.io/ggml-org/llama.cpp:server-cuda
+   LLAMACPP_GGUF_REPO=openbmb/MiniCPM5-2B-GGUF
+   LLAMACPP_GGUF_FILENAME=MiniCPM5-2B-Q8_0.gguf
+   LLAMACPP_CTX_SIZE=8192
+   LLAMACPP_N_GPU_LAYERS=999
+   # HF_TOKEN=
+   ```
 3. Start the stack:
 
    ```bash
-   docker compose up --build
+   docker compose up -d
    ```
 4. Watch startup (first boot downloads the GGUF into the shared `./data`
    volume; the `llama-server` container will exit and restart repeatedly with
@@ -77,10 +147,6 @@ in the app container.
    ```bash
    docker compose logs -f atk-ee
    ```
-
-Self-hosting on Windows or Linux requires accepting the license agreement
-shown at [atomizer.ai/get-started](https://atomizer.ai/get-started) before the
-compose file is available for download.
 
 ## 2. Launch the app
 
