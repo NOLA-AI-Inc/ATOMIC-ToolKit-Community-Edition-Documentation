@@ -74,7 +74,7 @@ shown at [atomizer.ai/get-started](https://atomizer.ai/get-started).
        volumes:
          - ./data:/app/data
        ports:
-         - "${ATK_PORT:-8880}:8880"
+         - "${ATK_BIND_HOST:-127.0.0.1}:${ATK_PORT:-8880}:8880"
        deploy:
          resources:
            reservations:
@@ -123,9 +123,17 @@ shown at [atomizer.ai/get-started](https://atomizer.ai/get-started).
    with an 8192-token context window. Set `HF_TOKEN` only if your chosen
    repo/filename is gated on Hugging Face.
 
+   `ATK_BIND_HOST` defaults to `127.0.0.1`, so the UI/API port is only reachable
+   from the Docker host itself — Docker otherwise publishes a port on every
+   network interface, which would expose AtomicIQ to your whole LAN. If you are
+   deploying to a server and want to reach it from other machines, set
+   `ATK_BIND_HOST=0.0.0.0` (or a specific interface IP) here, ideally behind a
+   reverse proxy or firewall rule that restricts who can connect.
+
    ```bash
    TAG=latest
    ATK_PORT=8880
+   ATK_BIND_HOST=127.0.0.1
    LLAMA_SERVER_HOST=llama-server
    LLAMA_SERVER_PORT=18100
    LLAMACPP_IMAGE=ghcr.io/ggml-org/llama.cpp:server-cuda
