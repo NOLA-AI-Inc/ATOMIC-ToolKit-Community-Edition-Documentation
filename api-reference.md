@@ -28,8 +28,9 @@ publishes the API on `http://localhost:8880` by default (`ATK_PORT` in `.env`)
 
 Treat `/v1/health` as reachability only. Most `/v1/*` routes require an
 authenticated user. The response also carries `inference_server.online`,
-which reflects whether the attached `llama.cpp` server (default
-`http://localhost:8100`) is reachable — a separate signal from the HTTP
+which reflects whether the attached `llama.cpp` server is reachable. The
+macOS default is `http://127.0.0.1:8100`; the Docker Compose setup uses
+`http://llama-server:8080`. This is a separate signal from the HTTP
 service being up.
 
 ## Authentication choices
