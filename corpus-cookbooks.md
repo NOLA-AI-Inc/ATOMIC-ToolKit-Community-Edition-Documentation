@@ -2,8 +2,10 @@
 
 Practical recipes for turning raw source material into a corpus AtomicIQ can
 ground Chat and Tasks against. There is no separate dataset-authoring tool —
-you ingest files directly through the **Library** app's **Add documents** tab
-or `POST /v1/ingest/file`, the same way for every source type below.
+ordinary documents are ingested through the **Library** app's **Add
+documents** tab or `POST /v1/ingest/file`; certified knowledge packs
+(`.nola-pack`) are installed through **Marketplace** or
+`POST /v1/packs/{subject}/import` instead.
 
 Use [Knowledge foundation](knowledge-foundation.md) when the source is an
 organizational standard or policy. Ownership, scope, status, and effective
@@ -32,9 +34,11 @@ template authoring. Prepare the file so it reads cleanly, then ingest it.
 3. Add a short title/date/author header at the top of each file (or use
    spreadsheet columns for the same fields) so AtomicIQ can surface
    attribution alongside answers.
-4. Open **Library → Add documents** in the app (or call `POST /v1/ingest/file`) and
-   upload the file(s). Use `POST /v1/clear-corpus` first if you are replacing
-   an existing corpus rather than adding to it.
+4. Open **Library → Add documents** in the app (or call `POST /v1/ingest/file`)
+   and upload the file(s) — this applies to ordinary documents, not certified
+   knowledge packs, which install via **Marketplace** or
+   `POST /v1/packs/{subject}/import` instead. Use `POST /v1/clear-corpus`
+   first if you are replacing an existing corpus rather than adding to it.
 5. Validate with a question whose answer is unique to the ingested source,
    and confirm the response reports grounding/citations rather than only
    plausible prose — see [Local API reference](api-reference.md) for the
