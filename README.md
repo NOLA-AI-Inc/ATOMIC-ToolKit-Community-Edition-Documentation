@@ -17,7 +17,7 @@ stack with a `llama.cpp` sidecar.
 | Goal | Guide |
 |---|---|
 | Install the app and ask a first grounded question | [Quickstart](quickstart.md) |
-| Understand Chat, Corpus, Validator, Account, and Settings | [Using AtomicIQ](app-guide.md) |
+| Understand Chat, Library, Validator, Account, and Settings | [Using AtomicIQ](app-guide.md) |
 | Connect a trusted application to the local API | [Application integration](developer-workflow.md) |
 | Look up authentication, CSRF, routes, and streaming events | [Local API reference](api-reference.md) |
 | Prepare useful source material | [Corpus cookbooks](corpus-cookbooks.md) |
