@@ -226,10 +226,10 @@ route, a knowledge-tree-backed implementation instead of ArcadeDB.
 { "subject": "store-id" }
 ```
 
-Switches the running process onto another provisioned store under
-`~/Library/Application Support/ATK/iq-stores/` and persists the choice through
-`atomic-config`. It does not re-index or materialize a new query-surface
-package — only an already-provisioned store can be selected.
+Switches the running process onto another provisioned store in the platform's
+runtime data directory and persists the choice through `atomic-config`. It does
+not re-index or materialize a new query-surface package — only an
+already-provisioned store can be selected.
 
 ## Marketplace routes
 
