@@ -1,5 +1,5 @@
 * [Home](/)
 * [Quickstart](/quickstart.md)
-* [Current app](/app-guide.md)
+* [AtomicIQ app](/app-guide.md)
 * [API](/api-reference.md)
 * [Troubleshooting](/troubleshooting.md)
