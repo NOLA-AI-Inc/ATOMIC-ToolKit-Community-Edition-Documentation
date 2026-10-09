@@ -1,21 +1,21 @@
 # Application integration
 
-Use ATOMIC Current's HTTP API when another application needs grounded answers,
+Use AtomicIQ's HTTP API when another application needs grounded answers,
 corpus search, validation, or ingestion. Do not couple an integration to the
-embedded database, application bundle, or implementation-specific files.
+embedded store, application bundle, or implementation-specific files.
 
 ## Choose the right integration shape
 
 | Client | Recommended design |
 |---|---|
-| ATK's own browser interface | Same-origin login session managed by the app |
+| AtomicIQ's own browser interface | Same-origin login session managed by the app |
 | Trusted local automation | Per-user API key, cookie jar, and CSRF handshake |
-| Server-side product | Backend adapter that protects the API key and normalizes ATK responses |
-| Browser or mobile product | Its backend calls ATK; never ship the ATK key to the client |
+| Server-side product | Backend adapter that protects the API key and normalizes AtomicIQ responses |
+| Browser or mobile product | Its backend calls AtomicIQ; never ship the AtomicIQ key to the client |
 
 The safest reusable boundary is a small backend adapter. It can discover the
 local endpoint, protect credentials, retain cookies, parse SSE, enforce request
-timeouts, and expose only the ATK operations your product needs.
+timeouts, and expose only the AtomicIQ operations your product needs.
 
 ## Integration flow
 
@@ -24,14 +24,14 @@ Your UI
   │
   ▼
 Your trusted backend adapter
-  ├─ discovers ATK URL
+  ├─ discovers AtomicIQ URL
   ├─ holds per-integration API key
   ├─ maintains CSRF cookie
   ├─ sends versioned /v1 requests
-  └─ parses SSE and evidence events
+  └─ parses SSE and citation events
   │
   ▼
-ATOMIC Current API ──→ corpus retrieval ──→ grounded response
+AtomicIQ API ──→ knowledge-tree retrieval ──→ llama.cpp ──→ grounded response
 ```
 
 ## 1. Establish readiness
@@ -40,7 +40,9 @@ At process startup:
 
 1. Discover the effective URL.
 2. Call `GET /v1/health` with a short timeout.
-3. Record the reported version when present.
+3. Check `inference_server.online` — a `false` value means the attached
+   `llama.cpp` server is not reachable and Chat/Tasks requests will fail or
+   queue even though the HTTP service itself is healthy.
 4. Obtain the CSRF cookie before the first mutation.
 5. Test one authenticated read that matches the client's permissions.
 
@@ -50,8 +52,8 @@ On macOS, a local companion can read the effective URL from:
 ~/Library/Application Support/ATK/launcher_ports.env
 ```
 
-On Windows (via WSL2) and Linux, ATOMIC Current runs as a Docker Compose stack
-and always publishes the API on `http://localhost:8880` — treat that as fixed
+On Windows (via WSL2) and Linux, AtomicIQ runs as a Docker Compose stack and
+publishes the API on `http://localhost:8880` by default — treat that as fixed
 configuration rather than something to discover.
 
 For a remote or managed deployment, make the base URL explicit configuration.
@@ -83,22 +85,21 @@ a complete request.
 `POST /v1/chat/stream/v2` returns SSE. A robust client:
 
 - appends only `choices[0].delta.content` to visible assistant text;
-- retains `calder_result`, `curiosity_guide`, and `tableaux_data` as evidence or
-  inspection metadata;
-- displays `queue_status` without treating it as answer text;
-- terminates on `[DONE]`, `cancelled`, or a fatal `error`;
+- retains `citations` (cited segments, `answerable`, supporting evidence) and
+  the `crawl_status` / `routing` / `carets` audit events as inspection
+  metadata;
+- terminates on `[DONE]` or a fatal `error`;
 - ignores unknown event fields;
 - supports user cancellation; and
-- uses a long enough idle timeout for local model startup.
+- uses a long enough idle timeout for `llama.cpp` cold starts.
 
-Keep the final answer and its evidence metadata associated in application
+Keep the final answer and its citation metadata associated in application
 state. Stripping the grounding events makes later review less trustworthy.
 
 ## 5. Integrate ingestion deliberately
 
-Use the Corpus app for human-driven uploads. Use `/v1/ingest/file` or the
-directory-processing routes only when an automated source has clear ownership,
-metadata, and update semantics.
+Use the Library app for human-driven uploads. Use `/v1/ingest/file` only when an
+automated source has clear ownership, metadata, and update semantics.
 
 Before automating ingestion, decide:
 
@@ -107,7 +108,8 @@ Before automating ingestion, decide:
 - whether it is authoritative, advisory, generated, or historical;
 - how updates and removals are represented;
 - which users may ingest it; and
-- how a failed or partially processed upload is surfaced.
+- how a failed or partially processed upload is surfaced (poll
+  `GET /v1/ingest/jobs`).
 
 Do not turn every application record into corpus text. Choose source material
 that will remain understandable when retrieved outside its original screen.
@@ -116,10 +118,11 @@ that will remain understandable when retrieved outside its original screen.
 
 Show users:
 
-- whether a response was grounded or bare;
+- whether a response was grounded (`answerable: true` with supporting
+  `segments`) or the model answered without usable evidence;
 - which source titles or identifiers supported it;
 - whether evidence was missing or conflicting;
-- the time and ATK version associated with the request; and
+- the time associated with the request; and
 - a clear boundary between quoted source material and model synthesis.
 
 If the product needs a decisive business rule, ingest the approved rule with
@@ -129,12 +132,12 @@ scope and ownership rather than encoding it only in a prompt.
 
 | Failure | Client behavior |
 |---|---|
-| ATK is not running | Explain how to start Current; do not spin indefinitely |
+| AtomicIQ is not running | Explain how to start AtomicIQ; do not spin indefinitely |
 | `401` | Stop and request key/session repair |
 | CSRF `403` | Refresh the cookie once, then surface the failure |
 | Permission `403` | Report the required operation; do not retry |
 | `429` | Retry with bounded exponential backoff |
-| Model cold start | Show progress and allow cancellation |
+| `inference_server.online: false` | Show a model-starting state; do not silently retry forever |
 | SSE disconnect | Mark the answer incomplete; never present it as final |
 | No grounding evidence | Label the response unsupported or ask for a better source |
 
@@ -143,9 +146,9 @@ scope and ownership rather than encoding it only in a prompt.
 Use a small integration test corpus containing facts that are absent from the
 base model. Verify:
 
-1. health and authentication;
+1. health, `inference_server.online`, and authentication;
 2. CSRF renewal;
-3. a grounded answer and its evidence events;
+3. a grounded answer and its citation events;
 4. a deliberately unsupported question;
 5. cancellation and timeout handling;
 6. a revoked API key; and

@@ -1,6 +1,6 @@
 # Repository source material
 
-ATK can make repository documentation searchable, but it does not inspect a
+AtomicIQ can make repository documentation searchable, but it does not inspect a
 live checkout merely because the repository exists on the same machine. The
 corpus contains only material that has been deliberately uploaded or processed
 through a supported ingestion path.
@@ -31,16 +31,16 @@ tool that produced them.
 | Scope | `services/payments` |
 | Publication date | `2026-07-22` |
 
-Place this metadata in the document and in the Corpus upload fields where
+Place this metadata in the document and in the Library upload fields where
 available.
 
 ## Keep answers revision-aware
 
-When asking ATK about code documentation, include the repository and revision
+When asking AtomicIQ about code documentation, include the repository and revision
 in the question. If the source revision is older than the code under review,
 treat the answer as historical context and inspect the current repository with
 normal development tools.
 
-ATK's corpus graph describes relationships in ingested knowledge. It is not a
+AtomicIQ's corpus graph describes relationships in ingested knowledge. It is not a
 replacement for a compiler, language server, test suite, or live source-code
 index.

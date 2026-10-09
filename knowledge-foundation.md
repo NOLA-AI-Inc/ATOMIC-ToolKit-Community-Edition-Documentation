@@ -1,6 +1,6 @@
 # Building a knowledge foundation
 
-Code, files, and model output can describe what exists. They do not tell ATK
+Code, files, and model output can describe what exists. They do not tell AtomicIQ
 what your organization has approved. A useful knowledge foundation supplies
 that missing intent as scoped, owned, reviewable documents.
 
@@ -23,7 +23,7 @@ it should not be promoted into policy merely because it is current.
 ## A safe document lifecycle
 
 ```text
-Draft ──→ technical review ──→ owner approval ──→ active source ──→ ATK ingestion
+Draft ──→ technical review ──→ owner approval ──→ active source ──→ AtomicIQ ingestion
   │                                                       │
   └──────────── never treated as active policy ───────────┘
 ```
@@ -36,12 +36,12 @@ Draft ──→ technical review ──→ owner approval ──→ active sourc
 6. Ingest only the approved version through Corpus.
 7. Supersede or remove it when policy changes.
 
-Missing policy is not a violation. ATK should report the gap rather than invent
+Missing policy is not a violation. AtomicIQ should report the gap rather than invent
 the organization's answer.
 
 ## Recommended Markdown format
 
-ATK can ingest ordinary Markdown. Consistent structure makes retrieval and
+AtomicIQ can ingest ordinary Markdown. Consistent structure makes retrieval and
 human review stronger:
 
 ```markdown
@@ -85,8 +85,9 @@ numbers that move during edits.
 
 ## Uploading an approved document
 
-1. Open **Corpus** in ATOMIC Current.
-2. Upload the active Markdown, PDF, DOCX, TXT, JSON, or Parquet source.
+1. Open **Library** → **Add documents** in AtomicIQ.
+2. Upload the active Markdown, PDF, DOCX, TXT, spreadsheet/CSV, or JSON Lines
+   source.
 3. Use a title that identifies the organization, subject, and version.
 4. Set the accountable author or owner.
 5. Choose a consistent category such as `security-standard` or

@@ -1,11 +1,12 @@
-* [ATōMIC Current Docs](/)
+* [AtomicIQ Docs](/)
 
 * Getting started
   * [Overview](/)
   * [Quickstart](/quickstart.md)
-  * [Using ATOMIC Current](/app-guide.md)
+  * [Using AtomicIQ](/app-guide.md)
     * [macOS](/app-guide-macos.md)
-    * [Windows and Linux](/app-guide-windows-linux.md)
+    * [Windows](/app-guide-windows.md)
+    * [Linux](/app-guide-linux.md)
   * [Troubleshooting](/troubleshooting.md)
 
 * Corpus and grounding
