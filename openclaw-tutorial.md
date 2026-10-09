@@ -69,7 +69,8 @@ answer into a grounded one through wording alone.
 - Verify health and `inference_server.online` before accepting work.
 - Refresh CSRF once after a stale-token response.
 - Treat revoked credentials as a hard stop.
-- Surface model cold-start progress via the `crawl_status` events.
+- Surface retrieval progress via `crawl_status` events; use
+  `inference_server.online` and timeout state for model cold starts.
 - Mark a disconnected SSE response incomplete.
 - Log route, status, duration, and request ID when available, never the API key
   or private corpus content.
