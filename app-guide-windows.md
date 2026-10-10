@@ -11,11 +11,11 @@ unless you are specifically testing the native build.
 ## Docker Compose (supported)
 
 Install WSL2 and Docker Desktop, then run the same two-container stack as
-Linux — see [Using AtomicIQ on Linux](app-guide-linux.md) for the full
-startup and local-files walkthrough; the steps and files are identical on
-Windows once Docker Desktop's WSL2 integration is enabled. See
-[Quickstart](quickstart.md#1-install-atomiciq) for the WSL2/Docker Desktop
-setup steps.
+Linux — see [Using AtomicIQ on Linux](app-guide-linux.md#install) for the
+full `docker-compose.yml`, `.env`, and startup walkthrough; the steps and
+files are identical on Windows once Docker Desktop's WSL2 integration is
+enabled. See [Quickstart](quickstart.md#1-install-atomiciq) for the
+WSL2/Docker Desktop setup steps.
 
 ## Native desktop app (preview)
 
